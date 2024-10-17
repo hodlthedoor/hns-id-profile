@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import dts from 'vite-plugin-dts'
+import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [
@@ -11,21 +12,19 @@ export default defineConfig({
   ],
   build: {
     lib: {
-      entry: 'src/index.ts',
-      name: 'HnsIdProfile',
-      formats: ['es', 'umd'],
+      entry: resolve(__dirname, 'src/index.ts'),
+      name: 'HnsIdReact',
       fileName: (format) => `index.${format}.js`,
+      formats: ['es', 'umd', 'cjs']
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'viem', 'lucide-react'],
+      external: ['react', 'react-dom'],
       output: {
         globals: {
           react: 'React',
-          'react-dom': 'ReactDOM',
-          viem: 'viem',
-          'lucide-react': 'lucide-react',
-        },
-      },
-    },
-  },
+          'react-dom': 'ReactDOM'
+        }
+      }
+    }
+  }
 })
