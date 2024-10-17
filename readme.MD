@@ -2,6 +2,8 @@
 
 A React component for displaying HNS.ID profiles with customizable styles and interactions. For use on the Optimism network. Visit [hns.id](https://hns.id) for more information.
 
+You can view a live demo here [https://hns-id-react.vercel.app/](https://hns-id-react.vercel.app/)
+
 ## Table of Contents
 
 - [Installation](#installation)
