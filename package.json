@@ -1,6 +1,6 @@
 {
   "name": "hns-id-react",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A React component for displaying HNS.ID profiles with customizable styles and interactions",
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",

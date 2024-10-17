@@ -187,7 +187,7 @@ const App: React.FC = () => {
       ),
       code: `<HnsIdProfile 
   address="${exampleAddress}"
-  useDefaultAvatar={true}
+  defaultAvatar={dataUrl} // can use http path also
 />`
     },
     {

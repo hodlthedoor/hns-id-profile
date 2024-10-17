@@ -12,14 +12,14 @@ interface HnsIdProfileProps {
     borderRadius?: string;
     isWide?: boolean;
     showAvatar?: boolean;
-    useDefaultAvatar?: boolean;
+    defaultAvatar?: string;
     onClick?: () => void;
     avatarSize?: number;
     showTooltip?: boolean;
     customLoadingComponent?: React.ReactNode;
     customErrorComponent?: React.ReactNode;
     showCopyButton?: boolean;
-    theme?: 'light' | 'dark';
+    theme?: "light" | "dark";
 }
 declare const HnsIdProfile: React.FC<HnsIdProfileProps>;
 export default HnsIdProfile;
