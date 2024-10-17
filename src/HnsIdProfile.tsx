@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { createPublicClient, http, Address } from 'viem';
-import { optimism, sepolia } from 'viem/chains';
-import contractABI from './abi.json';
-import { MAINNET_CONTRACT_ADDRESS, SEPOLIA_CONTRACT_ADDRESS } from './exports';
-import { User, Copy, Check } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { createPublicClient, http, Address } from "viem";
+import { optimism, optimismSepolia } from "viem/chains";
+import contractABI from "./abi.json";
+import { MAINNET_CONTRACT_ADDRESS, SEPOLIA_CONTRACT_ADDRESS } from "./exports";
+import { User, Copy, Check } from "lucide-react";
 
 interface HnsIdProfileProps {
   address: Address;
@@ -17,14 +17,14 @@ interface HnsIdProfileProps {
   borderRadius?: string;
   isWide?: boolean;
   showAvatar?: boolean;
-  useDefaultAvatar?: boolean;
+  defaultAvatar?: string;
   onClick?: () => void;
   avatarSize?: number;
   showTooltip?: boolean;
   customLoadingComponent?: React.ReactNode;
   customErrorComponent?: React.ReactNode;
   showCopyButton?: boolean;
-  theme?: 'light' | 'dark';
+  theme?: "light" | "dark";
 }
 
 const HnsIdProfile: React.FC<HnsIdProfileProps> = ({
@@ -34,19 +34,19 @@ const HnsIdProfile: React.FC<HnsIdProfileProps> = ({
   isSepolia = false,
   backgroundColor,
   textColor,
-  fontSize = '14px',
-  padding = '8px 12px',
-  borderRadius = '20px',
+  fontSize = "14px",
+  padding = "8px 12px",
+  borderRadius = "20px",
   isWide = false,
   showAvatar = true,
-  useDefaultAvatar = false,
+  defaultAvatar = null,
   onClick,
   avatarSize = 24,
   showTooltip = false,
   customLoadingComponent,
   customErrorComponent,
   showCopyButton = false,
-  theme = 'light',
+  theme = "light",
 }) => {
   const [name, setName] = useState<string | null>(null);
   const [avatar, setAvatar] = useState<string | null>(null);
@@ -58,36 +58,40 @@ const HnsIdProfile: React.FC<HnsIdProfileProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const contractAddress = isSepolia ? SEPOLIA_CONTRACT_ADDRESS : MAINNET_CONTRACT_ADDRESS;
-        const chain = isSepolia ? sepolia : optimism;
-        const defaultRpcUrl = isSepolia ? 'https://sepolia.optimism.io' : 'https://mainnet.optimism.io';
+        const contractAddress = isSepolia
+          ? SEPOLIA_CONTRACT_ADDRESS
+          : MAINNET_CONTRACT_ADDRESS;
+        const chain = isSepolia ? optimismSepolia : optimism;
+        const defaultRpcUrl = isSepolia
+          ? "https://sepolia.optimism.io"
+          : "https://mainnet.optimism.io";
 
         const client = createPublicClient({
           chain,
-          transport: http(rpcUrl || defaultRpcUrl)
+          transport: http(rpcUrl || defaultRpcUrl),
         });
 
         const contract = {
           address: contractAddress as Address,
           abi: contractABI,
-        }
+        };
 
-        const nameResult = await client.multicall({
+        const nameResult = (await client.multicall({
           contracts: [
             {
               ...contract,
-              functionName: 'getName',
+              functionName: "getName",
               args: [address, BigInt(coinType)],
             },
             {
               ...contract,
-              functionName: 'getText',
-              args: [address, 'avatar', BigInt(coinType)],
+              functionName: "getText",
+              args: [address, "avatar", BigInt(coinType)],
             },
           ],
-          multicallAddress: '0xca11bde05977b3631167028862be2a173976ca11',
+          multicallAddress: "0xca11bde05977b3631167028862be2a173976ca11",
           allowFailure: false,
-        }) as [string, string];
+        })) as [string, string];
 
         setName(nameResult[0]);
         setAvatar(nameResult[1]);
@@ -104,88 +108,105 @@ const HnsIdProfile: React.FC<HnsIdProfileProps> = ({
 
   const themeStyles = {
     light: {
-      backgroundColor: backgroundColor || '#f0f0f0',
-      textColor: textColor || '#000000',
+      backgroundColor: backgroundColor || "#f0f0f0",
+      textColor: textColor || "#000000",
     },
     dark: {
-      backgroundColor: backgroundColor || '#2a2a2a',
-      textColor: textColor || '#ffffff',
+      backgroundColor: backgroundColor || "#2a2a2a",
+      textColor: textColor || "#ffffff",
     },
   };
 
   const containerStyle: React.CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
     backgroundColor: themeStyles[theme].backgroundColor,
     color: themeStyles[theme].textColor,
     fontSize,
     padding,
     borderRadius,
-    overflow: 'hidden',
-    width: isWide ? '200px' : '120px',
-    cursor: onClick ? 'pointer' : 'default',
-    position: 'relative',
+    overflow: "hidden",
+    width: isWide ? "200px" : "120px",
+    cursor: onClick ? "pointer" : "default",
+    position: "relative",
   };
 
   const avatarStyle: React.CSSProperties = {
     width: `${avatarSize}px`,
     height: `${avatarSize}px`,
-    borderRadius: '50%',
-    marginRight: '8px',
+    borderRadius: "50%",
+    marginRight: "8px",
     flexShrink: 0,
   };
 
   const nameStyle: React.CSSProperties = {
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
     flexGrow: 1,
     minWidth: 0,
   };
 
   const tooltipStyle: React.CSSProperties = {
-    position: 'absolute',
-    bottom: '100%',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    backgroundColor: theme === 'light' ? '#333' : '#f0f0f0',
-    color: theme === 'light' ? '#fff' : '#333',
-    padding: '5px 10px',
-    borderRadius: '4px',
-    fontSize: '12px',
-    whiteSpace: 'nowrap',
+    position: "absolute",
+    bottom: "calc(100% + 10px)", // Move it 10px above the element
+    left: "50%",
+    transform: "translateX(-50%)",
+    backgroundColor:
+      theme === "light" ? "rgba(51, 51, 51, 0.9)" : "rgba(240, 240, 240, 0.9)",
+    color: theme === "light" ? "#fff" : "#333",
+    padding: "8px 12px",
+    borderRadius: "6px",
+    fontSize: "14px",
+    lineHeight: "1.4",
+    whiteSpace: "nowrap",
     opacity: showTooltipContent ? 1 : 0,
-    transition: 'opacity 0.3s',
-    pointerEvents: 'none',
+    visibility: showTooltipContent ? "visible" : "hidden", // Add visibility for better transitions
+    transition: "opacity 0.3s, visibility 0.3s",
+    pointerEvents: "none",
+    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
+    zIndex: 1000,
+    maxWidth: "300px", // Prevent extremely long tooltips
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   };
 
   const copyButtonStyle: React.CSSProperties = {
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    padding: '4px',
-    marginLeft: '4px',
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    padding: "4px",
+    marginLeft: "4px",
     color: themeStyles[theme].textColor,
   };
 
   if (loading) {
-    return customLoadingComponent || (
-      <div style={{
-        ...containerStyle,
-        animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-      }}>
-        Loading...
-      </div>
+    return (
+      customLoadingComponent || (
+        <div
+          style={{
+            ...containerStyle,
+            animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+          }}
+        >
+          Loading...
+        </div>
+      )
     );
   }
 
   if (error) {
-    return customErrorComponent || (
-      <div style={{ color: 'red', width: containerStyle.width }}>Error: {error}</div>
+    return (
+      customErrorComponent || (
+        <div style={{ color: "red", width: containerStyle.width }}>
+          Error: {error}
+        </div>
+      )
     );
   }
 
-  const truncateAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+  const truncateAddress = (addr: string) =>
+    `${addr.slice(0, 6)}...${addr.slice(-4)}`;
   const displayName = name || truncateAddress(address);
 
   const handleCopy = (e: React.MouseEvent) => {
@@ -196,31 +217,37 @@ const HnsIdProfile: React.FC<HnsIdProfileProps> = ({
   };
 
   return (
-    <div 
-      style={containerStyle} 
+    <div
+      style={containerStyle}
       onClick={onClick}
-      onMouseEnter={() => setShowTooltipContent(true)}
-      onMouseLeave={() => setShowTooltipContent(false)}
+      onMouseEnter={() => {
+        setShowTooltipContent(true);
+      }}
+      onMouseLeave={() => {
+        setShowTooltipContent(false);
+      }}
     >
-      {showAvatar && (
-        useDefaultAvatar ? (
-          <img src="default.png" alt="Default Avatar" style={avatarStyle} />
+      {showAvatar &&
+        (defaultAvatar && defaultAvatar != "" ? (
+          <img src={defaultAvatar} alt="Default Avatar" style={avatarStyle} />
         ) : avatar ? (
           <img src={avatar} alt="Avatar" style={avatarStyle} />
         ) : (
           <User style={avatarStyle} />
-        )
-      )}
+        ))}
       <span style={nameStyle}>{displayName}</span>
       {showCopyButton && (
         <button onClick={handleCopy} style={copyButtonStyle}>
           {copied ? <Check size={16} /> : <Copy size={16} />}
         </button>
       )}
+
       {showTooltip && (
-        <div style={tooltipStyle}>
-          {name ? `${name} (${address})` : address}
-        </div>
+        <>
+          <div style={tooltipStyle}>
+            {name ? `${name} (${address})` : address}
+          </div>
+        </>
       )}
     </div>
   );
