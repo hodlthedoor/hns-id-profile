@@ -207,12 +207,12 @@ const App: React.FC = () => {
       title: "Custom Error Component",
       component: (
         <HnsIdProfile 
-          address={exampleAddress}
+          address={"0xthisisnotanaddress"}
           customErrorComponent={<CustomErrorComponent error="Failed to load" />}
         />
       ),
       code: `<HnsIdProfile 
-  address="${exampleAddress}"
+  address="0xthisisnotanaddress"
   customErrorComponent={<CustomErrorComponent error="Failed to load" />}
 />`
     },
