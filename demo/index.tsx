@@ -116,7 +116,7 @@ const App: React.FC = () => {
           showCopyButton={true}
           theme="dark"
           avatarSize={28}
-          backgroundColor="#1a1a1a"
+          backgroundColor="#ee11bf"
           textColor="#ffffff"
           fontSize="16px"
           padding="10px 15px"
@@ -131,7 +131,7 @@ const App: React.FC = () => {
   showCopyButton={true}
   theme="dark"
   avatarSize={28}
-  backgroundColor="#1a1a1a"
+  backgroundColor="#ee11bf"
   textColor="#ffffff"
   fontSize="16px"
   padding="10px 15px"
